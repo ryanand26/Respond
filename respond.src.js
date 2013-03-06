@@ -39,6 +39,7 @@ window.matchMedia = window.matchMedia || (function( doc, undefined ) {
 
 
 /*! Respond.js v1.1.0: min/max-width media query polyfill. (c) Scott Jehl. MIT/GPLv2 Lic. j.mp/respondjs  */
+/*! Patched to include a completed function surfaced through window.respond.completed. Ryan Mitchell. */
 (function( win ){
 
 	"use strict";
@@ -49,6 +50,9 @@ window.matchMedia = window.matchMedia || (function( doc, undefined ) {
 	
 	//define update even in native-mq-supporting browsers, to avoid errors
 	respond.update = function(){};
+
+	//define complted callback even in native-mq-supporting browsers, to avoid errors
+	respond.completed = function(){};
 	
 	//expose media query support flag for external use
 	respond.mediaQueriesSupported	= win.matchMedia && win.matchMedia( "only all" ).matches;
@@ -113,6 +117,12 @@ window.matchMedia = window.matchMedia || (function( doc, undefined ) {
 					// we prevent "Stack overflow" error in IE7
 					win.setTimeout(function(){ makeRequests(); },0);
 				} );
+			}
+			else {
+				//all requests complete
+				if (respond.completed) {
+					respond.completed();
+				}
 			}
 		},
 		
